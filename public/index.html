@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookshop - Browse & Review Books</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Beesy Bookshelf</h1>
+            <nav class="nav">
+                <div id="auth-buttons" class="auth-buttons">
+                    <button class="btn btn-outline" onclick="showLoginModal()">Login</button>
+                    <button class="btn btn-primary" onclick="showRegisterModal()">Register</button>
+                </div>
+                <div id="user-info" class="user-info" style="display: none;">
+                    <span id="username-display"></span>
+                    <button class="btn btn-outline" onclick="logout()">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Search Section -->
+            <section class="search-section">
+                <h2>Search Books</h2>
+                <div class="search-tabs">
+                    <button class="tab-btn active" onclick="switchSearchTab('all')">All Books</button>
+                    <button class="tab-btn" onclick="switchSearchTab('isbn')">By ISBN</button>
+                    <button class="tab-btn" onclick="switchSearchTab('author')">By Author</button>
+                    <button class="tab-btn" onclick="switchSearchTab('title')">By Title</button>
+                </div>
+                <div class="search-form">
+                    <div id="search-all" class="search-type">
+                        <button class="btn btn-primary" onclick="loadAllBooks()">Load All Books</button>
+                    </div>
+                    <div id="search-isbn" class="search-type" style="display: none;">
+                        <input type="text" id="isbn-input" placeholder="Enter ISBN (e.g., 978-0-123456-78-9)" class="input">
+                        <button class="btn btn-primary" onclick="searchByISBN()">Search</button>
+                    </div>
+                    <div id="search-author" class="search-type" style="display: none;">
+                        <input type="text" id="author-input" placeholder="Enter Author Name" class="input">
+                        <button class="btn btn-primary" onclick="searchByAuthor()">Search</button>
+                    </div>
+                    <div id="search-title" class="search-type" style="display: none;">
+                        <input type="text" id="title-input" placeholder="Enter Book Title" class="input">
+                        <button class="btn btn-primary" onclick="searchByTitle()">Search</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Books Display Section -->
+            <section class="books-section">
+                <div id="loading" class="loading" style="display: none;">Loading...</div>
+                <div id="error-message" class="error-message" style="display: none;"></div>
+                <div id="books-container" class="books-grid"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('login-modal')">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" class="input" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="input" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            <div id="login-error" class="error-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('register-modal')">&times;</span>
+            <h2>Register</h2>
+            <form id="register-form" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" class="input" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" class="input" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" class="input" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+            <div id="register-error" class="error-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Book Details Modal -->
+    <div id="book-modal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close" onclick="closeModal('book-modal')">&times;</span>
+            <div id="book-details"></div>
+            <div id="reviews-section">
+                <h3>Reviews</h3>
+                <div id="reviews-container"></div>
+                <div id="login-prompt" style="display: none; padding: 1rem; background: #F5E6E0; border-radius: 6px; margin: 1rem 0; border-left: 4px solid var(--warning-color);">
+                    <p><strong>Want to add a review?</strong> Please <a href="#" onclick="event.preventDefault(); closeModal('book-modal'); showLoginModal();" style="color: var(--accent-green); text-decoration: underline;">login</a> or <a href="#" onclick="event.preventDefault(); closeModal('book-modal'); showRegisterModal();" style="color: var(--accent-green); text-decoration: underline;">register</a> to add your review.</p>
+                </div>
+                <div id="review-form-container" style="display: none;">
+                    <div style="background: #E8F0E6; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid var(--accent-green);">
+                        <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-green);">📝 Add or Edit Your Review</h4>
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-light);">You can add a new review or modify your existing one for this book.</p>
+                    </div>
+                    <form id="review-form" onsubmit="handleReviewSubmit(event)">
+                        <div class="form-group">
+                            <label for="review-text">Your Review</label>
+                            <textarea id="review-text" class="input" rows="4" placeholder="Share your thoughts about this book..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="review-rating">Rating (1-5 stars)</label>
+                            <input type="number" id="review-rating" class="input" min="1" max="5" placeholder="5" required>
+                            <small style="color: var(--text-light);">Rate from 1 (poor) to 5 (excellent)</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
