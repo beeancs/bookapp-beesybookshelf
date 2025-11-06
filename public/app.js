@@ -7,10 +7,7 @@ const API_BASE = (() => {
         return 'http://localhost:3000/api';
     }
     // For GitHub Pages or other production environments
-    // Replace this with your deployed backend URL (e.g., Railway, Render, Heroku)
-    // Example: return 'https://your-app-name.railway.app/api';
-    // Example: return 'https://your-app-name.onrender.com/api';
-    return 'https://YOUR-BACKEND-URL.railway.app/api'; // TODO: Replace with your actual backend URL
+    return 'beesybookshelf.up.railway.app/api'; 
 })();
 
 // State Management
