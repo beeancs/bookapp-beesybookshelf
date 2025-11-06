@@ -1,13 +1,14 @@
 // API Base URL - Automatically detects environment
 // For local development: uses localhost
-// For production (GitHub Pages): uses deployed backend URL
+// For production: uses same domain (Railway serves both frontend and backend)
 const API_BASE = (() => {
     // Check if running on localhost
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return 'http://localhost:3000/api';
     }
-    // For GitHub Pages or other production environments
-    return 'beesybookshelf.up.railway.app/api'; 
+    // For production (Railway, Render, etc.) - use same domain
+    // Since Railway serves both frontend and backend from the same URL
+    return `${window.location.origin}/api`;
 })();
 
 // State Management

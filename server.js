@@ -20,6 +20,7 @@ app.use(cors({
             'http://localhost:3000',
             'http://127.0.0.1:3000',
             /^https:\/\/.*\.github\.io$/, // Allow all GitHub Pages domains
+            /^https:\/\/.*\.railway\.app$/, // Allow all Railway domains
         ];
         
         // Check if origin matches any allowed pattern
